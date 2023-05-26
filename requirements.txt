@@ -4,4 +4,4 @@ requests
 shap
 streamlit_shap
 mlflow
-plotly.graph_objects
+#plotly.graph_objects
