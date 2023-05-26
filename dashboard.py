@@ -95,14 +95,14 @@ def graph(value):
 
 @st.cache_resource
 def load_model():
-    model_uri = "file:///C:/Users/LN6428/Documents/P7/OC-P7/mlruns/222107729629896078/f374711e229f4188a406d396f2080269/artifacts/model"
+    model_uri = "./model"
     loaded_model = mlflow.sklearn.load_model(model_uri)
     return loaded_model
 
 @st.cache_data
 def load_data(customer_ID):
     # Charger le dataframe
-    df = pd.read_csv('clean_data.csv', index_col=0)  
+    df = pd.read_csv('df_sample.csv', index_col=0)  
     feats = [f for f in df.columns if f not in ['TARGET','SK_ID_CURR','SK_ID_BUREAU','SK_ID_PREV','index']]
     X = df[feats]
     #Récupérer les informations du client
@@ -134,7 +134,7 @@ predict_btn = st.button('Obtenir le score')
 # Prédiction du score
 if predict_btn:
     st.session_state['ID'] = customer_ID
-    URL = 'http://127.0.0.1:8000/customer/{}'.format(st.session_state['ID'])
+    URL = 'https://modelfastapi.herokuapp.com/customer/{}'.format(st.session_state['ID'])
     pred = requests.get(url = URL)
     score = int(float(pred.text)*100)
 
