@@ -3,10 +3,7 @@ import streamlit as st
 import requests
 import shap
 from streamlit_shap import st_shap
-import numpy as np
 import mlflow
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.graph_objects as go
 
 from streamlit_echarts import st_echarts

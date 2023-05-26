@@ -1,0 +1,7 @@
+pandas==1.5.3
+streamlit==1.20.0
+requests==2.28.1
+shap==0.41.0
+streamlit_shap==1.0.2
+mlflow==2.2.2
+plotly.graph_objects==5.14.0
