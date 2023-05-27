@@ -1,8 +1,8 @@
 pandas
+plotly
 streamlit
 requests
 shap
 streamlit_shap
 mlflow
 joblib
-plotly
