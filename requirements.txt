@@ -4,5 +4,6 @@ streamlit
 requests
 shap
 streamlit_shap
+streamlit_echarts
 mlflow
 joblib
