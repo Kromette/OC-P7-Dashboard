@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 import shap
 from streamlit_shap import st_shap
-import mlflow
+import joblib
 import plotly.graph_objects as go
 
 from streamlit_echarts import st_echarts
@@ -95,8 +95,7 @@ def graph(value):
 
 @st.cache_resource
 def load_model():
-    model_uri = "./model"
-    loaded_model = mlflow.sklearn.load_model(model_uri)
+    loaded_model = joblib.load("model.pkl")
     return loaded_model
 
 @st.cache_data

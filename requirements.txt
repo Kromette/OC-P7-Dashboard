@@ -4,4 +4,5 @@ requests
 shap
 streamlit_shap
 mlflow
-#plotly.graph_objects
+joblib
+plotly
