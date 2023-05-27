@@ -6,4 +6,5 @@ shap
 streamlit_shap
 streamlit_echarts
 mlflow
+lightgbm
 joblib
