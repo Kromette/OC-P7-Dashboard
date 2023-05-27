@@ -101,7 +101,7 @@ def load_model():
 @st.cache_data
 def load_data(customer_ID):
     # Charger le dataframe
-    df = pd.read_csv('df_sample.csv', index_col=0)  
+    df = pd.read_csv("https://media.githubusercontent.com/media/Kromette/OC-P7-Model/main/df_small.csv", index_col=0)  
     feats = [f for f in df.columns if f not in ['TARGET','SK_ID_CURR','SK_ID_BUREAU','SK_ID_PREV','index']]
     X = df[feats]
     #Récupérer les informations du client
@@ -112,7 +112,7 @@ def load_data(customer_ID):
 @st.cache_data
 def load_sample(customer_ID):
     # Charger le dataframe
-    df = pd.read_csv('df_sample.csv', index_col=0)  
+    df = pd.read_csv("https://media.githubusercontent.com/media/Kromette/OC-P7-Model/main/df_small.csv", index_col=0)  
     feats = [f for f in df.columns if f not in ['TARGET','SK_ID_CURR','SK_ID_BUREAU','SK_ID_PREV','index']]
     X = df[feats]
     # Modifier l'index du dataframe pour pouvoir récupérer l'index associé au client
