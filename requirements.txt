@@ -1,8 +1,9 @@
 pandas
+numpy==1.23.5
 plotly
-streamlit
+streamlit==1.20.0
 requests
-shap
+shap==0.41.0
 streamlit_shap
 streamlit_echarts
 mlflow
