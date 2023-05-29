@@ -5,7 +5,6 @@ import shap
 from streamlit_shap import st_shap
 import joblib
 import plotly.graph_objects as go
-import pytest
 
 from streamlit_echarts import st_echarts
 
