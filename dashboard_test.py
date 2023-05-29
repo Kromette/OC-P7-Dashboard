@@ -139,7 +139,7 @@ customer_ID = st.text_input('ID du client')
 loaded_model = load_model()
 predict_btn = st.button('Obtenir le score')
 if customer_ID == '':
-    st.write('Veuillez rentrer un identifiant client')
+    st.write('Veuillez entrer un identifiant client (format 6 chiffres)')
 else:
     # Prédiction du score
     if predict_btn:
@@ -163,7 +163,6 @@ if 'score' in st.session_state:
         else :
             st.title(':red[Crédit refusé]')
 
-    #with st.expander('Afficher la feature importance'):
     # Obtention de l'importance
     df, X, X_customer, index = load_sample(customer_ID)
     # compute SHAP values
@@ -174,7 +173,6 @@ if 'score' in st.session_state:
     st.title('Importance locale')
     st_shap(shap.plots.waterfall(shap_values[index]), height=400)
 
-    #with st.expander("Afficher l'analyse univariée"):
     st.title('Analyse univariée')
     # Choisir les features à visualiser
     df_importance = pd.DataFrame(list(zip(loaded_model.feature_importances_, loaded_model.feature_name_)), columns=['Importance', 'Feature'])
@@ -190,19 +188,13 @@ if 'score' in st.session_state:
                     go.Scatter(x=[-0.5, 1.5], y=[X_customer[feat].to_list()[0], X_customer[feat].to_list()[0]], mode = 'lines', marker_color='red', name='{}'.format(customer_ID))])
     st.plotly_chart(fig2, use_container_width=True)
 
-    #with st.expander("Afficher l'analyse bivariée"):
     st.title('Analyse bivariée')
     # Analyse bivariée
     df['color'] = df['TARGET'].astype(str)
     feat1 = st.selectbox("Choisissez la feature 1", (features))
     feat2 = st.selectbox("Choisissez la feature 2", (features))
-    # Créer un template
-    #my_template = go.layout.Template()
-    #my_template.data.scatter = [go.Scatter(marker=dict(color='red')),
-    #                            go.Scatter(marker=dict(color='green'))]
 
     fig3 = go.Figure()
-    #fig3.update_layout(template=my_template)
     fig3.add_traces([go.Scatter(x=df[feat1] , y=df[feat2], mode='markers', marker=dict(color=df['TARGET'], size=5, colorscale = [[0, 'green'], [1, 'red']]), name='Clients'),
                     go.Scatter(x=X_customer[feat1], y=X_customer[feat2], mode='markers', marker=dict(color='black', size=10), name='{}'.format(customer_ID))])
     fig3.update_layout(
@@ -213,7 +205,6 @@ if 'score' in st.session_state:
             
     st.plotly_chart(fig3, use_container_width=True)
     st.write('En vert les clients sans défaut de paiement et en rouge ceux qui présentent un défaut de paiement')
-
 
 class TestDashboard():
     def test_formatter(self):
