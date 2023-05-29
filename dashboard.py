@@ -8,6 +8,11 @@ import plotly.graph_objects as go
 
 from streamlit_echarts import st_echarts
 
+st.set_page_config(
+    page_title="Bank Dashboard",
+    page_icon="💶",
+)
+
 def formatter(value) :
     if (value == 0.875) :
         return 'Grade A'
@@ -92,7 +97,6 @@ def graph(value):
     }
     st_echarts(options=options, width="100%", key=0)
 
-
 @st.cache_resource
 def load_model():
     loaded_model = joblib.load("model.pkl")
@@ -123,52 +127,49 @@ def load_sample(customer_ID):
     #X_customer = X_customer[feats]
     return df, X, X_customer, index
 
-
 st.title("Prédiction de la capacité d'emprunt")
 score = False
 customer_ID = st.text_input('ID du client')
 loaded_model = load_model()
 predict_btn = st.button('Obtenir le score')
-
-# Prédiction du score
-if predict_btn:
-    st.session_state['ID'] = customer_ID
-    URL = 'https://modelfastapi.herokuapp.com/customer/{}'.format(st.session_state['ID'])
-    pred = requests.get(url = URL)
-    score = int(float(pred.text)*100)
+if customer_ID == '':
+    st.write('Veuillez rentrer un identifiant client')
+else:
+    # Prédiction du score
+    if predict_btn:
+        st.session_state['ID'] = customer_ID
+        URL = 'https://modelfastapi.herokuapp.com/customer/{}'.format(st.session_state['ID'])
+        pred = requests.get(url = URL)
+        score = int(float(pred.text)*100)
+        st.session_state['score'] = score
 
 # Afficher le graphe si un score est enregistré
-if score:
-    graph(score)
-    if score < 30:
-        st.write('Crédit accordé')
-    else :
-        st.write('Crédit refusé')
+colA, colB = st.columns(2)
 
-with st.expander('Afficher la feature importance'):
-    #st.title('Importance globale')
+if 'score' in st.session_state:
+    with colA:
+        graph(st.session_state['score'])
+    with colB:
+        st.title(' ')
+        st.title(' ')
+        if st.session_state['score'] < 30:
+            st.title(':green[Crédit accordé]')
+        else :
+            st.title(':red[Crédit refusé]')
+
+    #with st.expander('Afficher la feature importance'):
     # Obtention de l'importance
     df, X, X_customer, index = load_sample(customer_ID)
-    # data feature importance
-    #df_importance = pd.DataFrame(list(zip(loaded_model.feature_importances_, loaded_model.feature_name_)), columns=['Importance', 'Feature'])
-    #df_importance = df_importance.sort_values('Importance', ascending=True)
-    #data = df_importance[-10:]
-    #import plotly.express as px
-    #fig = px.bar(data, x = 'Importance', y = 'Feature', text_auto=True, title="Feature importance")
-    #st.plotly_chart(fig)
-
     # compute SHAP values
     explainer = shap.Explainer(loaded_model, X)
-
     st.title('Importance globale')
     shap_values = explainer(X, check_additivity=False)
     st_shap(shap.plots.beeswarm(shap_values), height=400)
     st.title('Importance locale')
     st_shap(shap.plots.waterfall(shap_values[index]), height=400)
-    
 
-
-with st.expander("Afficher l'analyse univariée"):
+    #with st.expander("Afficher l'analyse univariée"):
+    st.title('Analyse univariée')
     # Choisir les features à visualiser
     df_importance = pd.DataFrame(list(zip(loaded_model.feature_importances_, loaded_model.feature_name_)), columns=['Importance', 'Feature'])
     df_importance = df_importance.sort_values('Importance', ascending=True)
@@ -183,23 +184,29 @@ with st.expander("Afficher l'analyse univariée"):
                     go.Scatter(x=[-0.5, 1.5], y=[X_customer[feat].to_list()[0], X_customer[feat].to_list()[0]], mode = 'lines', marker_color='red', name='{}'.format(customer_ID))])
     st.plotly_chart(fig2, use_container_width=True)
 
-with st.expander("Afficher l'analyse bivariée"):
-
+    #with st.expander("Afficher l'analyse bivariée"):
+    st.title('Analyse bivariée')
     # Analyse bivariée
     df['color'] = df['TARGET'].astype(str)
     feat1 = st.selectbox("Choisissez la feature 1", (features))
     feat2 = st.selectbox("Choisissez la feature 2", (features))
+    # Créer un template
+    #my_template = go.layout.Template()
+    #my_template.data.scatter = [go.Scatter(marker=dict(color='red')),
+    #                            go.Scatter(marker=dict(color='green'))]
 
     fig3 = go.Figure()
-    fig3.add_traces([go.Scatter(x=df[feat1] , y=df[feat2], mode='markers', marker=dict(color=df['TARGET'], size=3), name='Clients'),
-                    go.Scatter(x=X_customer[feat1], y=X_customer[feat2], mode='markers', marker=dict(color='red', size=10), name='{}'.format(customer_ID))])
+    #fig3.update_layout(template=my_template)
+    fig3.add_traces([go.Scatter(x=df[feat1] , y=df[feat2], mode='markers', marker=dict(color=df['TARGET'], size=5, colorscale = [[0, 'green'], [1, 'red']]), name='Clients'),
+                    go.Scatter(x=X_customer[feat1], y=X_customer[feat2], mode='markers', marker=dict(color='black', size=10), name='{}'.format(customer_ID))])
     fig3.update_layout(
         title='Analyse bivariée {} et {}'.format(feat1, feat2),
         xaxis_title=feat1,
         yaxis_title=feat2
     )
-        
+            
     st.plotly_chart(fig3, use_container_width=True)
+    st.write('En vert les clients sans défaut de paiement et en rouge ceux qui présentent un défaut de paiement')
 
 
 class TestDashboard():
