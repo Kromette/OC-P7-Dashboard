@@ -5,6 +5,7 @@ import shap
 from streamlit_shap import st_shap
 import joblib
 import plotly.graph_objects as go
+import pytest
 
 from streamlit_echarts import st_echarts
 
@@ -220,11 +221,11 @@ class TestDashboard():
 
     def test_load_sample(self):
         # Arrange
-        customer_id = 169732
+        customer_id = 200475
         # Act
         df, X, X_customer, index = load_sample(customer_id)
         # Assert
-        assert index == 4
+        assert index == 1
 
     def test_load_model(self):
         # Arrange
