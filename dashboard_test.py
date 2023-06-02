@@ -146,13 +146,18 @@ else:
         st.session_state['ID'] = customer_ID
         URL = 'https://modelfastapi.herokuapp.com/customer/{}'.format(st.session_state['ID'])
         pred = requests.get(url = URL)
-        score = int(float(pred.text)*100)
-        st.session_state['score'] = score
+        if pred.status_code == 200:
+            score = int(float(pred.text)*100)
+            st.session_state['score'] = score
+            st.session_state['Customer_id'] = True
+        else :
+            st.warning("L'identifiant client n'est pas valide")
+            st.session_state['Customer_id'] = False
 
 # Afficher le graphe si un score est enregistré
 colA, colB = st.columns(2)
 
-if 'score' in st.session_state:
+if ('score' in st.session_state) and (st.session_state['Customer_id']):
     with colA:
         graph(st.session_state['score'])
     with colB:
