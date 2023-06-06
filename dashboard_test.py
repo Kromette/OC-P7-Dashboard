@@ -43,10 +43,10 @@ def graph(value):
                         "width": 10,
                     
                         "color": [
-                            [0.25, '#229954'],
-                            [0.30, '#32A826'],
-                            [0.35, '#C02B2B'],
-                            [1, '#781B1B']
+                            [0.25, 'blue'],
+                            [0.30, 'blue'],
+                            [0.35, 'red'],
+                            [1, 'red']
                         ]
                     },
                 },
@@ -164,7 +164,7 @@ if ('score' in st.session_state) and (st.session_state['Customer_id']):
         st.title(' ')
         st.title(' ')
         if st.session_state['score'] < 30:
-            st.title(':green[Crédit accordé]')
+            st.title(':blue[Crédit accordé]')
         else :
             st.title(':red[Crédit refusé]')
 
@@ -200,7 +200,7 @@ if ('score' in st.session_state) and (st.session_state['Customer_id']):
     feat2 = st.selectbox("Choisissez la feature 2", (features))
 
     fig3 = go.Figure()
-    fig3.add_traces([go.Scatter(x=df[feat1] , y=df[feat2], mode='markers', marker=dict(color=df['TARGET'], size=5, colorscale = [[0, 'green'], [1, 'red']]), name='Clients'),
+    fig3.add_traces([go.Scatter(x=df[feat1] , y=df[feat2], mode='markers', marker=dict(color=df['TARGET'], size=5, colorscale = [[0, 'blue'], [1, 'red']]), name='Clients'),
                     go.Scatter(x=X_customer[feat1], y=X_customer[feat2], mode='markers', marker=dict(color='black', size=10), name='{}'.format(customer_ID))])
     fig3.update_layout(
         title='Analyse bivariée {} et {}'.format(feat1, feat2),
@@ -209,7 +209,7 @@ if ('score' in st.session_state) and (st.session_state['Customer_id']):
     )
             
     st.plotly_chart(fig3, use_container_width=True)
-    st.write('En vert les clients sans défaut de paiement et en rouge ceux qui présentent un défaut de paiement')
+    st.write('En bleu les clients sans défaut de paiement et en rouge ceux qui présentent un défaut de paiement')
 
 class TestDashboard():
     def test_formatter(self):
